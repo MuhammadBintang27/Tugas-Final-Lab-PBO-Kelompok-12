@@ -9,7 +9,7 @@ import java.io.*;
  * 
  * @author Bintang
  */
-class CustomerDriver {
+class CustomerDriver extends Driver{
     private ArrayList<Customer> listCustomer = new ArrayList<>();
     private ListBarang listBarang;
     private Keranjang keranjang;
@@ -135,6 +135,7 @@ class CustomerDriver {
      * mencetak invoice,
      * melihat daftar transaksi, dan logout.
      */
+    @Override
     public void showMenu() {
         int choice = -1;
         Scanner scanner = new Scanner(System.in);
