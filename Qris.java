@@ -1,8 +1,8 @@
 /**
  * Kelas {@code Qris} merupakan subkelas dari {@code Pembayaran} yang mengimplementasikan
  * metode abstrak {@code prosesPembayaran()} untuk menangani pembayaran dengan metode QRIS (Quick Response Code).
- * @author Alvia
  */
+import java.util.Scanner;
 public class Qris extends Pembayaran {
 
       /**
@@ -20,6 +20,7 @@ public class Qris extends Pembayaran {
      */
     @Override
     protected void prosesPembayaran() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("+--------------------------------------+");
         System.out.println("      Silahkan Scan QR Code Berikut\n");
         System.out.println("            |||||  |||| |||");
@@ -27,6 +28,8 @@ public class Qris extends Pembayaran {
         System.out.println("            ||| || ||||||||");
         System.out.println("            |||||| |||| |||");
         System.out.println("            ||||||||||| |||");
+        System.out.println("Input angka 1, jika sudah scan QR");
+        int input = scanner.nextInt();
         System.out.println("\n Pembayaran dengan QRIS sedang diproses");
         System.out.println("      Menunggu konfirmasi admin\n");
         
