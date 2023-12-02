@@ -1,11 +1,15 @@
 import java.util.*;
 import java.io.*;
+
 /**
- * Kelas {@code AdminDriver} adalah pengelola interaksi sistem untuk pengguna dengan peran admin.
- * Kelas ini mencakup fungsionalitas seperti manajemen barang, konfirmasi transaksi, dan navigasi menu admin.
+ * Kelas {@code AdminDriver} adalah pengelola interaksi sistem untuk pengguna
+ * dengan peran admin.
+ * Kelas ini mencakup fungsionalitas seperti manajemen barang, konfirmasi
+ * transaksi, dan navigasi menu admin.
+ * 
  * @author Bintang
  */
-class AdminDriver extends Driver {
+class AdminDriver {
     private ListBarang listBarang;
     private Transaksi transaksi = new Transaksi();
     private ArrayList<Admin> listAdmin = new ArrayList<>();
@@ -22,7 +26,8 @@ class AdminDriver extends Driver {
     }
 
     /**
-     * Menetapkan objek {@code CustomerDriver} untuk memfasilitasi interaksi dengan pelanggan.
+     * Menetapkan objek {@code CustomerDriver} untuk memfasilitasi interaksi dengan
+     * pelanggan.
      *
      * @param customerDriver objek {@code CustomerDriver} yang ditetapkan
      */
@@ -31,7 +36,8 @@ class AdminDriver extends Driver {
     }
 
     /**
-     * Mendapatkan objek {@code CustomerDriver} yang digunakan untuk interaksi dengan pelanggan.
+     * Mendapatkan objek {@code CustomerDriver} yang digunakan untuk interaksi
+     * dengan pelanggan.
      *
      * @return objek {@code CustomerDriver}
      */
@@ -57,7 +63,7 @@ class AdminDriver extends Driver {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Memeriksa apakah username admin sudah terdaftar.
      *
@@ -75,7 +81,7 @@ class AdminDriver extends Driver {
         return false; // Username belum terdaftar
     }
 
-     /**
+    /**
      * Memverifikasi login admin berdasarkan username dan password.
      *
      * @param username username admin
@@ -84,20 +90,20 @@ class AdminDriver extends Driver {
      */
     public Admin verifikasiLoginAdmin(String username, String password) {
         loadAdminData(); // Load admin data from the database
-    
+
         for (Admin admin : listAdmin) {
             if (admin.checkLogin(username, password)) {
                 return admin;
             }
         }
-    
+
         return null;
     }
-    
+
     /**
      * Memuat data admin dari file database.
      */
-    private void loadAdminData() {  // Metode untuk memuat data admin dari file database
+    private void loadAdminData() { // Metode untuk memuat data admin dari file database
         try (BufferedReader reader = new BufferedReader(new FileReader("admin_database.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -113,25 +119,25 @@ class AdminDriver extends Driver {
             e.printStackTrace();
         }
     }
-    
-     /**
+
+    /**
      * Membuat file database admin jika belum ada.
      */
-    private void createAdminDatabaseFile() {  // Metode untuk membuat file database admin jika belum ada
+    private void createAdminDatabaseFile() { // Metode untuk membuat file database admin jika belum ada
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("admin_database.txt"))) {
             // Creating an empty file
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Mendaftarkan admin baru dan menyimpannya ke file database.
      *
      * @param username username admin baru
      * @param password password admin baru
      */
-    public void signUpAdmin(String username, String password) {  // Metode untuk mendaftarkan admin baru
+    public void signUpAdmin(String username, String password) { // Metode untuk mendaftarkan admin baru
         Admin newAdmin = new Admin(username, password);
         saveAdminData(newAdmin);
         System.out.println("\n     Akun Admin berhasil terdaftar!");
@@ -139,8 +145,8 @@ class AdminDriver extends Driver {
     }
 
     /**
-    * @param admin Admin yang akan disimpan ke dalam file database
-    */
+     * @param admin Admin yang akan disimpan ke dalam file database
+     */
     private void saveAdminData(Admin admin) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("admin_database.txt", true))) {
             writer.write(admin.getUsername() + "," + admin.getPassword() + "\n");
@@ -150,44 +156,48 @@ class AdminDriver extends Driver {
     }
 
     /**
-    * Metode {@code terimaTransaksi} menampilkan daftar transaksi belum dikonfirmasi,
-    * meminta input ID transaksi admin, dan memanggil {@code konfirmasiTransaksi}.
-    * Jika tidak ada transaksi belum dikonfirmasi, tampilkan pesan tidak ada transaksi.
-    */
+     * Metode {@code terimaTransaksi} menampilkan daftar transaksi belum
+     * dikonfirmasi,
+     * meminta input ID transaksi admin, dan memanggil {@code konfirmasiTransaksi}.
+     * Jika tidak ada transaksi belum dikonfirmasi, tampilkan pesan tidak ada
+     * transaksi.
+     */
     public void terimaTransaksi() {
         // Menampilkan daftar transaksi yang belum dikonfirmasi
         transaksi.lihatListTransaksiBelumDikonfirmasi();
-    
+
         // Pemanggilan loadTransaksiBelumDikonfirmasi di sini
         Map<String, Invoice> daftarInvoices = transaksi.loadTransaksiBelumDikonfirmasi();
-    
+
         if (daftarInvoices.isEmpty()) {
             System.out.println("Tidak ada transaksi yang belum dikonfirmasi.");
             return; // Keluar dari metode jika tidak ada transaksi yang belum dikonfirmasi
         }
-    
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("+--------------------------------------+");
         System.out.print("Masukkan ID Transaksi yang ingin Anda konfirmasi: ");
         String idTransaksi = scanner.nextLine();
-    
+
         // Melakukan konfirmasi transaksi
         konfirmasiTransaksi(idTransaksi);
     }
-    
+
     /**
-    * Konfirmasi transaksi berdasarkan ID. Jika ID ditemukan, transaksi dikonfirmasi,
-    * status pelanggan diubah, dan transaksi dihapus. Jika tidak ditemukan, tampilkan pesan kesalahan.
-    *
-    * @param idTransaksi ID transaksi yang akan dikonfirmasi
-    */
+     * Konfirmasi transaksi berdasarkan ID. Jika ID ditemukan, transaksi
+     * dikonfirmasi,
+     * status pelanggan diubah, dan transaksi dihapus. Jika tidak ditemukan,
+     * tampilkan pesan kesalahan.
+     *
+     * @param idTransaksi ID transaksi yang akan dikonfirmasi
+     */
     public void konfirmasiTransaksi(String idTransaksi) {
         Map<String, Invoice> daftarInvoices = transaksi.loadTransaksiBelumDikonfirmasi();
 
         if (daftarInvoices.containsKey(idTransaksi)) {
-            //Invoice invoice = daftarInvoices.get(idTransaksi);
+            // Invoice invoice = daftarInvoices.get(idTransaksi);
             customerDriver.setStatusDikonfirmasi(true);
-            System.out.println("Pembelian dengan transaksi Id "+idTransaksi+ " berhasil dikonfirmasi");
+            System.out.println("Pembelian dengan transaksi Id " + idTransaksi + " berhasil dikonfirmasi");
             System.out.println("Customer sudah bisa mencetak INVOICE");
 
             transaksi.hapusTransaksiDikonfirmasi(idTransaksi);
@@ -196,58 +206,64 @@ class AdminDriver extends Driver {
         }
     }
 
-     /**
+    /**
      * Menampilkan menu admin dan menangani pilihan pengguna.
      */
     public void showMenu() {
-        int choice;
+        int choice = -1;
         Scanner scanner = new Scanner(System.in);
-    
+
         System.out.println("+--------------------------------------+");
         System.out.println("   Anda Berhasil Masuk Sebagai Admin");
         do {
-            System.out.println("+============= MENU ADMIN =============+");
-            System.out.println("| 1. Tambah Barang                     |");
-            System.out.println("| 2. Hapus Barang                      |");
-            System.out.println("| 3. Edit Barang                       |");
-            System.out.println("| 4. Lihat Daftar Barang               |");
-            System.out.println("| 5. Terima Transaksi                  |");
-            System.out.println("| 6. Lihat Daftar transaksi            |");
-            System.out.println("| 0. Logout                            |");
-            System.out.println("+--------------------------------------+");
-            System.out.print("              Pilih menu: ");
-            choice = scanner.nextInt();
-    
-            switch (choice) {
-                case 1:
-                    listBarang.tambahBarang();
-                    break;
-                case 2:
-                    listBarang.hapusBarang(listBarang.getDaftarBarang());
-                    break;
-                case 3:
-                    listBarang.editBarang();
-                    break;
-                case 4:
-                    // Memastikan data barang yang ditampilkan selalu yang terbaru
-                    listBarang.updateDaftarBarang();
-                    listBarang.lihatListBarang(listBarang.getDaftarBarang());
-                    break;
-                case 5:
-                    terimaTransaksi();
-                    break;
-                case 6:
-                    // Tampilkan transaksi yang sedang berlangsung
-                    transaksi.lihatListTransaksi(); // Menampilkan list transaksi yang sedang berlangsung
-                    break;
-                case 0:
-                    System.out.println("             Logout berhasil");
-                    break;
-                default:
-                    System.out.println("    Pilihan tidak tersedia, coba lagi");
+            try {
+                System.out.println("+============= MENU ADMIN =============+");
+                System.out.println("| 1. Tambah Barang                     |");
+                System.out.println("| 2. Hapus Barang                      |");
+                System.out.println("| 3. Edit Barang                       |");
+                System.out.println("| 4. Lihat Daftar Barang               |");
+                System.out.println("| 5. Terima Transaksi                  |");
+                System.out.println("| 6. Lihat Daftar transaksi            |");
+                System.out.println("| 0. Logout                            |");
+                System.out.println("+--------------------------------------+");
+                System.out.print("              Pilih menu: ");
+                choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        listBarang.tambahBarang();
+                        break;
+                    case 2:
+                        listBarang.hapusBarang(listBarang.getDaftarBarang());
+                        break;
+                    case 3:
+                        listBarang.editBarang();
+                        break;
+                    case 4:
+                        // Memastikan data barang yang ditampilkan selalu yang terbaru
+                        listBarang.updateDaftarBarang();
+                        listBarang.lihatListBarang(listBarang.getDaftarBarang());
+                        break;
+                    case 5:
+                        terimaTransaksi();
+                        break;
+                    case 6:
+                        // Tampilkan transaksi yang sedang berlangsung
+                        transaksi.lihatListTransaksi(); // Menampilkan list transaksi yang sedang berlangsung
+                        break;
+                    case 0:
+                        System.out.println("             Logout berhasil");
+                        break;
+                    default:
+                        System.out.println("    Pilihan tidak tersedia, coba lagi");
+                }
+            } catch (InputMismatchException e) {
+                // Tangani exception jika input bukan angka
+                System.out.println("Hanya menerima inputan berupa angka");
+                scanner.next(); // Membersihkan buffer input
             }
         } while (choice != 0);
-        //scanner.close();
+        // scanner.close();
         // Save the final list of items to the file before exiting
         listBarang.saveDaftarBarangToFile();
     }
