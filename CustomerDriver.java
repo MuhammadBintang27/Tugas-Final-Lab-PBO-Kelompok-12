@@ -2,11 +2,14 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Kelas ini merepresentasikan pengelolaan data dan aktivitas yang berkaitan dengan pelanggan.
- * Melibatkan pendaftaran pelanggan, login, pengelolaan keranjang belanja, transaksi, dan lainnya.
+ * Kelas ini merepresentasikan pengelolaan data dan aktivitas yang berkaitan
+ * dengan pelanggan.
+ * Melibatkan pendaftaran pelanggan, login, pengelolaan keranjang belanja,
+ * transaksi, dan lainnya.
+ * 
  * @author Bintang
  */
-class CustomerDriver extends Driver {
+class CustomerDriver {
     private ArrayList<Customer> listCustomer = new ArrayList<>();
     private ListBarang listBarang;
     private Keranjang keranjang;
@@ -29,7 +32,8 @@ class CustomerDriver extends Driver {
     }
 
     /**
-     * Konstruktor untuk objek CustomerDriver. Inisialisasi objek ListBarang dan Keranjang.
+     * Konstruktor untuk objek CustomerDriver. Inisialisasi objek ListBarang dan
+     * Keranjang.
      */
     public CustomerDriver() {
         listBarang = new ListBarang();
@@ -125,71 +129,78 @@ class CustomerDriver extends Driver {
         }
     }
 
-     /**
+    /**
      * Menampilkan menu utama untuk pelanggan dan menangani operasi pilihan menu.
-     * Pilihan menu mencakup melihat, menambahkan barang ke keranjang, checkout, mencetak invoice,
+     * Pilihan menu mencakup melihat, menambahkan barang ke keranjang, checkout,
+     * mencetak invoice,
      * melihat daftar transaksi, dan logout.
      */
     public void showMenu() {
-        int choice;
+        int choice = -1;
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("+--------------------------------------+");
         System.out.println("  Anda Berhasil Masuk Sebagai Customer");
         do {
-            System.out.println("+==========  MENU  CUSTOMER  ==========+");
-            System.out.println("| 1. Lihat List Barang                 |");
-            System.out.println("| 2. Tambah Barang ke Keranjang        |");
-            System.out.println("| 3. Checkout                          |");
-            System.out.println("| 4. Cetak Invoice                     |");
-            System.out.println("| 5. Lihat Daftar Transaksi            |");
-            System.out.println("| 0. Logout                            |");
-            System.out.println("+--------------------------------------+");
-            System.out.print("              Pilih menu: ");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1:
-                    listBarang.updateDaftarBarang();
-                    listBarang.lihatListBarang(listBarang.getDaftarBarang());
-                    listBarang.saveDaftarBarangToFile();
-                    break;
-                case 2:
-                    keranjang.tambahKeranjang(listBarang.getDaftarBarang());
-                    listBarang.saveDaftarBarangToFile();
-                    break;
-                case 3:
-                    // Update objek Transaksi sebelum menggunakan keranjang.checkout
-                    invoice.pilihMetodePembayaran();
-                    listBarang.saveDaftarBarangToFile();
-                    break;
-                case 4:
-                    boolean keranjangisi = invoice.cek_keranjang();
-                    if (keranjangisi) {
-                        if (isStatusDikonfirmasi()) {
-                            invoice.cetakInvoice();
-                            invoice.simpanTransaksiKeDatabase();
-                            setStatusDikonfirmasi(false);
-                            keranjang.clearKeranjangFile();
+            try {
+                System.out.println("+==========  MENU  CUSTOMER  ==========+");
+                System.out.println("| 1. Lihat List Barang                 |");
+                System.out.println("| 2. Tambah Barang ke Keranjang        |");
+                System.out.println("| 3. Checkout                          |");
+                System.out.println("| 4. Cetak Invoice                     |");
+                System.out.println("| 5. Lihat Daftar Transaksi            |");
+                System.out.println("| 0. Logout                            |");
+                System.out.println("+--------------------------------------+");
+                System.out.print("              Pilih menu: ");
+                choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        listBarang.updateDaftarBarang();
+                        listBarang.lihatListBarang(listBarang.getDaftarBarang());
+                        listBarang.saveDaftarBarangToFile();
+                        break;
+                    case 2:
+                        keranjang.tambahKeranjang(listBarang.getDaftarBarang());
+                        listBarang.saveDaftarBarangToFile();
+                        break;
+                    case 3:
+                        // Update objek Transaksi sebelum menggunakan keranjang.checkout
+                        invoice.pilihMetodePembayaran();
+                        listBarang.saveDaftarBarangToFile();
+                        break;
+                    case 4:
+                        boolean keranjangisi = invoice.cek_keranjang();
+                        if (keranjangisi) {
+                            if (isStatusDikonfirmasi()) {
+                                invoice.cetakInvoice();
+                                invoice.simpanTransaksiKeDatabase();
+                                setStatusDikonfirmasi(false);
+                                keranjang.clearKeranjangFile();
+                            } else {
+                                System.out.println("+--------------------------------------+");
+                                System.out.println("   Menunggu Transaksi diterima Admin");
+                                System.out.println("+--------------------------------------+");
+                            }
                         } else {
-                            System.out.println("+--------------------------------------+");
-                            System.out.println("   Menunggu Transaksi diterima Admin");
-                            System.out.println("+--------------------------------------+");
+                            System.out.println("Belum ada checkout yang dilakukan");
                         }
-                    } else {
-                        System.out.println("Belum ada checkout yang dilakukan");
-                    }
-                    listBarang.saveDaftarBarangToFile();
-                    break;
+                        listBarang.saveDaftarBarangToFile();
+                        break;
 
-                case 5:
-                    transaksi.lihatListTransaksi();
-                    listBarang.saveDaftarBarangToFile();
-                    break;
-                case 0:
-                    System.out.println("             Logout berhasil");
-                    break;
-                default:
-                    System.out.println("    Pilihan tidak tersedia, coba lagi");
+                    case 5:
+                        transaksi.lihatListTransaksi();
+                        listBarang.saveDaftarBarangToFile();
+                        break;
+                    case 0:
+                        System.out.println("             Logout berhasil");
+                        break;
+                    default:
+                        System.out.println("    Pilihan tidak tersedia, coba lagi");
+                }
+            } catch (InputMismatchException e) {
+                // Tangani exception jika input bukan angka
+                System.out.println("Hanya menerima inputan berupa angka");
+                scanner.next(); // Membersihkan buffer input
             }
         } while (choice != 0);
         listBarang.saveDaftarBarangToFile();
