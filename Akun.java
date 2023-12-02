@@ -47,5 +47,4 @@ class Akun {
     public String getId() {
         return id;
     }
-    
 }
