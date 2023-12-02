@@ -9,7 +9,7 @@ import java.io.*;
  * 
  * @author Bintang
  */
-class AdminDriver {
+class AdminDriver extends Driver {
     private ListBarang listBarang;
     private Transaksi transaksi = new Transaksi();
     private ArrayList<Admin> listAdmin = new ArrayList<>();
