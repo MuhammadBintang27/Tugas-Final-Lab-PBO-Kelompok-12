@@ -1,19 +1,20 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Kelas ini merepresentasikan daftar barang yang tersedia.
  * Daftar barang dapat diakses, diubah, dan disimpan serta dimuat dari file.
+ * 
  * @author Bintang
  */
 public class ListBarang implements Serializable {
     private ArrayList<Barang> daftarBarang;
     private static final String FILE_NAME = "daftarBarang.txt";
 
-      /**
+    /**
      * Konstruktor untuk kelas ListBarang.
-     * Menginisialisasi daftar barang dari file jika file tersedia, jika tidak, membuat daftar baru.
+     * Menginisialisasi daftar barang dari file jika file tersedia, jika tidak,
+     * membuat daftar baru.
      */
     public ListBarang() {
         this.daftarBarang = loadDaftarBarangFromFile();
@@ -24,27 +25,28 @@ public class ListBarang implements Serializable {
     }
 
     /**
-     * Metode untuk menginisialisasi data default jika file tidak dapat dibaca atau tidak ada.
+     * Metode untuk menginisialisasi data default jika file tidak dapat dibaca atau
+     * tidak ada.
      */
     private void initializeDefaultData() {
         // Inisialisasi data default
         if (daftarBarang == null) {
             daftarBarang = new ArrayList<>();
         }
-    
+
         Barang barang1 = new Barang("Barang1", 10000, 50);
         Barang barang2 = new Barang("Barang2", 15000, 30);
         Barang barang3 = new Barang("Barang3", 20000, 20);
-    
+
         daftarBarang.add(barang1);
         daftarBarang.add(barang2);
         daftarBarang.add(barang3);
-    
+
         // Simpan daftar barang ke file setelah inisialisasi
         saveDaftarBarangToFile();
     }
-    
-     /**
+
+    /**
      * Metode untuk memperbarui daftar barang dengan data dari file.
      */
     public void updateDaftarBarang() {
@@ -73,7 +75,7 @@ public class ListBarang implements Serializable {
             return null;
         }
     }
-    
+
     /**
      * Metode untuk menyimpan daftar barang ke file.
      */
@@ -116,7 +118,7 @@ public class ListBarang implements Serializable {
 
             }
         }
-        
+
     }
 
     /**
@@ -124,23 +126,45 @@ public class ListBarang implements Serializable {
      */
     public void tambahBarang() {
         Scanner scanner = new Scanner(System.in);
-
+    
         System.out.println("+--------------------------------------+");
         System.out.print("Masukkan nama barang: ");
         String nama = scanner.nextLine();
-
-        System.out.print("Masukkan harga barang: ");
-        int harga = scanner.nextInt();
-
-        System.out.print("Masukkan stok barang: ");
-        int stok = scanner.nextInt();
-
+    
+        int harga = 0;
+        int stok = 0;
+    
+        boolean inputHargaValid = false;
+        boolean inputStokValid = false;
+    
+        do {
+            try {
+                System.out.print("Masukkan harga barang: ");
+                harga = scanner.nextInt();
+                inputHargaValid = true; // Jika mencapai baris ini, input harga sudah valid
+            } catch (InputMismatchException e) {
+                System.out.println("Harga harus berupa angka. Silakan coba lagi.");
+                scanner.nextLine(); // Membersihkan buffer input
+            }
+        } while (!inputHargaValid);
+    
+        do {
+            try {
+                System.out.print("Masukkan stok barang: ");
+                stok = scanner.nextInt();
+                inputStokValid = true; // Jika mencapai baris ini, input stok sudah valid
+            } catch (InputMismatchException e) {
+                System.out.println("Stok harus berupa angka. Silakan coba lagi.");
+                scanner.nextLine(); // Membersihkan buffer input
+            }
+        } while (!inputStokValid);
+    
         Barang barang = new Barang(nama, harga, stok);
         daftarBarang.add(barang);
-
+    
         System.out.println("+--------------------------------------+");
         System.out.println("      Barang berhasil ditambahkan!");
-
+    
         // Save the updated list of items to the file
         saveDaftarBarangToFile();
     }
@@ -172,37 +196,60 @@ public class ListBarang implements Serializable {
         }
     }
 
-     /**
+    /**
      * Metode untuk mengedit data barang dalam daftar.
      */
     public void editBarang() {
         Scanner scanner = new Scanner(System.in);
-
+    
         System.out.println("+--------------------------------------+");
         System.out.print("Masukkan nama barang untuk diedit: ");
         String namaBarang = scanner.nextLine();
-
+    
         for (Barang barang : daftarBarang) {
             if (barang.getNama().equalsIgnoreCase(namaBarang)) {
-                System.out.print("Masukkan harga baru: ");
-                int hargaBaru = scanner.nextInt();
+                int hargaBaru = 0;
+                int stokBaru = 0;
+    
+                boolean inputHargaValid = false;
+                boolean inputStokValid = false;
+    
+                do {
+                    try {
+                        System.out.print("Masukkan harga baru: ");
+                        hargaBaru = scanner.nextInt();
+                        inputHargaValid = true; // Jika mencapai baris ini, input harga sudah valid
+                    } catch (InputMismatchException e) {
+                        System.out.println("Harga harus berupa angka. Silakan coba lagi.");
+                        scanner.nextLine(); // Membersihkan buffer input
+                    }
+                } while (!inputHargaValid);
+    
+                do {
+                    try {
+                        System.out.print("Masukkan stok baru: ");
+                        stokBaru = scanner.nextInt();
+                        inputStokValid = true; // Jika mencapai baris ini, input stok sudah valid
+                    } catch (InputMismatchException e) {
+                        System.out.println("Stok harus berupa angka. Silakan coba lagi.");
+                        scanner.nextLine(); // Membersihkan buffer input
+                    }
+                } while (!inputStokValid);
+    
                 barang.setHarga(hargaBaru);
-
-                System.out.print("Masukkan stok baru: ");
-                int stokBaru = scanner.nextInt();
                 barang.setStok(stokBaru);
-
+    
                 System.out.println("        Barang berhasil diedit!");
                 System.out.println("+--------------------------------------+");
-
+    
                 // Save the updated list of items to the file
                 saveDaftarBarangToFile();
-
+    
                 return;
             }
         }
-
-        System.out.println("        Barang tidak ditemukan.");
+    
+        System.out.println("Barang dengan nama " + namaBarang + " tidak ditemukan.");
         System.out.println("+--------------------------------------+");
     }
 
@@ -210,7 +257,7 @@ public class ListBarang implements Serializable {
      * @param barangDaftar ArrayList yang berisi daftar barang.
      */
     public void lihatListBarang(ArrayList<Barang> barangDaftar) {
-            System.out.println("+=========== DAFTAR  BARANG ===========+");
+        System.out.println("+=========== DAFTAR  BARANG ===========+");
         int nomor = 1;
         for (Barang barang : barangDaftar) {
             System.out.println(nomor + ". Nama\t\t: " + barang.getNama());
@@ -222,7 +269,7 @@ public class ListBarang implements Serializable {
     }
 
     /**
-     * @param barang Barang yang akan diperbarui stoknya.
+     * @param barang  Barang yang akan diperbarui stoknya.
      * @param newStok Stok baru.
      */
     public void updateStok(Barang barang, int newStok) {
@@ -232,12 +279,12 @@ public class ListBarang implements Serializable {
             // Update stok Barang
             Barang barangToUpdate = daftarBarang.get(index);
             barangToUpdate.setStok(newStok);
-            
+
         }
     }
-    
+
     /**
-     * @param nama Nama barang yang dicari.
+     * @param nama         Nama barang yang dicari.
      * @param barangDaftar ArrayList yang berisi daftar barang.
      * @return Barang yang sesuai dengan nama atau null jika tidak ditemukan.
      */
@@ -250,4 +297,3 @@ public class ListBarang implements Serializable {
         return null;
     }
 }
-
